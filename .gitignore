@@ -1,0 +1,4 @@
+*.pem
+*.csr
+*.srl
+data/opendistro/elasticsearch/data

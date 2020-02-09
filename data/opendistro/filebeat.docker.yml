@@ -1,0 +1,27 @@
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      hints.enabled: true
+
+processors:
+- add_cloud_metadata: ~
+
+output.elasticsearch:
+  hosts: ["https://odfe-node1:9200"]
+  username: 'admin'
+  password: 'admin'
+  ssl.enabled: true 
+  ssl.certificate_authorities: ["/usr/share/filebeat/config/root-ca.pem"]
+  #  ssl.certificate: "/etc/pki/client/node.pem"
+  #  ssl.key: "/etc/pki/client/node-key.pem"
+setup.kibana:
+  host: "odfe-kibana:5601"
+  ssl.enabled: true
+  ssl.certificate_authorities: ["/usr/share/filebeat/config/root-ca.pem"]
+  #  ssl.certificate: "/etc/pki/client/node.pem"
+  #  ssl.key: "/etc/pki/client/node-key.pem"
