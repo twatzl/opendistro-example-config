@@ -1,24 +1,31 @@
 #!/bin/sh
 
+SUBJECT_ROOTCA="/C=AT/ST=Upper Austria/L = Linz/CN=twatzl.eu"
+SUBJECT_ADMIN="/C=AT/ST=Upper Austria/L = Linz/CN=admin.odfe"
+SUBJECT_NODE1="/C=AT/ST=Upper Austria/L = Linz/CN=odfe-node1"
+SUBJECT_NODE2="/C=AT/ST=Upper Austria/L = Linz/CN=odfe-node2"
+
+# important: CN has to match the container name
+
 # https://opendistro.github.io/for-elasticsearch-docs/docs/security-configuration/generate-certificates/
 # Generate a private key
 openssl genrsa -out root-ca-key.pem 4096
 # Generate a root certificate
-openssl req -new -x509 -sha256 -days 365 -key root-ca-key.pem -out root-ca.pem
+openssl req -new -x509 -sha256 -days 365 -key root-ca-key.pem -out root-ca.pem -subj $SUBJECT_ROOTCA
 # Generate an admin certificate
 openssl genrsa -out admin-key-temp.pem 4096
 openssl pkcs8 -inform PEM -outform PEM -in admin-key-temp.pem -topk8 -nocrypt -v1 PBE-SHA1-3DES -out admin-key.pem
-openssl req -new -key admin-key.pem -out admin.csr
+openssl req -new -key admin-key.pem -out admin.csr -subj $SUBJECT_ADMIN
 openssl x509 -req -in admin.csr -CA root-ca.pem -CAkey root-ca-key.pem -CAcreateserial -sha256 -out admin.pem
 # Node1 cert
 openssl genrsa -out node1-key-temp.pem 4096
 openssl pkcs8 -inform PEM -outform PEM -in node1-key-temp.pem -topk8 -nocrypt -v1 PBE-SHA1-3DES -out node1-key.pem
-openssl req -new -key node1-key.pem -out node1.csr
+openssl req -new -key node1-key.pem -out node1.csr -subj $SUBJECT_NODE1
 openssl x509 -req -in node1.csr -CA root-ca.pem -CAkey root-ca-key.pem -CAcreateserial -sha256 -out node1.pem
 # Node2 cert
 openssl genrsa -out node2-key-temp.pem 4096
 openssl pkcs8 -inform PEM -outform PEM -in node2-key-temp.pem -topk8 -nocrypt -v1 PBE-SHA1-3DES -out node2-key.pem
-openssl req -new -key node2-key.pem -out node2.csr
+openssl req -new -key node2-key.pem -out node2.csr -subj $SUBJECT_NODE2
 openssl x509 -req -in node2.csr -CA root-ca.pem -CAkey root-ca-key.pem -CAcreateserial -sha256 -out node2.pem
 # Cleanup
 rm admin-key-temp.pem
