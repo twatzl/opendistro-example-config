@@ -1,0 +1,19 @@
+version: '3'
+services:
+  filebeat:
+    image: docker.elastic.co/beats/filebeat-oss:7.5.2
+    container_name: filebeat
+    user: root
+    volumes:
+      - "${DATA_PATH}/opendistro/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro"
+      - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
+      - ./filebeat.pem:/etc/pki/client/node.pem
+      - ./filebeat-key.pem:/etc/pki/client/node-key.pem
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - ./root-ca.pem:/usr/share/filebeat/config/root-ca.pem
+    command: "-e -strict.perms=false"
+    networks:
+      - odfe-net
+
+networks:
+  odfe-net:
