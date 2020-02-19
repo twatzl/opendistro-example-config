@@ -2,3 +2,4 @@
 *.csr
 *.srl
 data/opendistro/elasticsearch/data
+data/opendistro/elasticsearch/securityconfig
