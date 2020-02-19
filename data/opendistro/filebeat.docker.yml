@@ -6,19 +6,23 @@ filebeat.config:
 filebeat.autodiscover:
   providers:
     - type: docker
+      encoding: utf-8
+      combine_partial: true
       hints.enabled: true
 
 processors:
 - add_cloud_metadata: ~
 
-output.elasticsearch:
-  hosts: ["https://odfe-node1:9200"]
-  username: 'admin'
-  password: 'admin'
-  ssl.enabled: true 
-  ssl.certificate_authorities: ["/usr/share/filebeat/config/root-ca.pem"]
+  #output.elasticsearch:
+  #  hosts: ["https://odfe-node1:9200"]
+  #  username: 'admin'
+  #  password: 'admin'
+  #  ssl.enabled: true 
+  #  ssl.certificate_authorities: ["/usr/share/filebeat/config/root-ca.pem"]
   #  ssl.certificate: "/etc/pki/client/node.pem"
-  #  ssl.key: "/etc/pki/client/node-key.pem"
+  #  ssl.key: "/etc/pki/client/node-key.pem"i
+output.logstash:
+  hosts: ["odfe-logstash:5044"]
 setup.kibana:
   host: "odfe-kibana:5601"
   ssl.enabled: true
